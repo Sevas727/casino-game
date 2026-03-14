@@ -10,7 +10,10 @@ export class GameScene {
   public overlayLayer: Container;
   public reelsContainer: ReelsContainer;
 
-  constructor(private app: Application) {
+  private app: Application;
+
+  constructor(app: Application) {
+    this.app = app;
     this.stage = new Container();
     this.backgroundLayer = new Container();
     this.reelsLayer = new Container();

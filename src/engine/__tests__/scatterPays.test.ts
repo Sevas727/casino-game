@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { calculateScatterPays, countScatters } from '../scatterPays';
-import { SymbolId, ReelResult } from '../types';
+import type { ReelResult } from '../types';
+import { SymbolId } from '../types';
 
 /**
  * Creates a 6x5 ReelResult from a flat array of 30 symbols (col-major:

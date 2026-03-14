@@ -2,7 +2,6 @@ import { Container, Graphics, Text } from 'pixi.js';
 import type { ReelsContainer } from '../components/ReelsContainer';
 import type { WinResult } from '../../engine/types';
 import { SymbolView } from '../components/SymbolView';
-import { BUFFER_SYMBOLS } from './ReelSpinAnimation';
 
 /**
  * Show win highlights: dim non-winning symbols, add golden glow around winners.

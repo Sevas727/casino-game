@@ -10,11 +10,13 @@ import { BottomBar } from './ui/BottomBar';
 import { FreeSpinsOverlay } from './ui/FreeSpinsOverlay';
 import { SoundToggle } from './ui/SoundToggle';
 import { RulesButton } from './ui/RulesButton';
+import { LoadingScreen } from './ui/LoadingScreen';
 import './styles/ui.css';
 
 function Game() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState<GameScene | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -25,6 +27,7 @@ function Game() {
       gameScene.resize(app.screen.width, app.screen.height);
       gameScene.reelsContainer.setReelResult(generateReelResult());
       setScene(gameScene);
+      setLoading(false);
     });
 
     return () => {
@@ -38,6 +41,7 @@ function Game() {
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
+      <LoadingScreen visible={loading} />
       <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'absolute' }} />
       <SoundToggle />
       <RulesButton />

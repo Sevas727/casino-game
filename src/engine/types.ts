@@ -1,18 +1,20 @@
-export enum SymbolId {
-  WILD = 'wild',
-  SCATTER = 'scatter',
-  HIGH1 = 'high1',
-  HIGH2 = 'high2',
-  HIGH3 = 'high3',
-  HIGH4 = 'high4',
-  MID1 = 'mid1',
-  MID2 = 'mid2',
-  LOW1 = 'low1',
-  LOW2 = 'low2',
-  LOW3 = 'low3',
-  LOW4 = 'low4',
-  LOW5 = 'low5',
-}
+export const SymbolId = {
+  WILD: 'wild',
+  SCATTER: 'scatter',
+  HIGH1: 'high1',
+  HIGH2: 'high2',
+  HIGH3: 'high3',
+  HIGH4: 'high4',
+  MID1: 'mid1',
+  MID2: 'mid2',
+  LOW1: 'low1',
+  LOW2: 'low2',
+  LOW3: 'low3',
+  LOW4: 'low4',
+  LOW5: 'low5',
+} as const;
+
+export type SymbolId = (typeof SymbolId)[keyof typeof SymbolId];
 
 export interface SymbolPayEntry {
   minCount: number;

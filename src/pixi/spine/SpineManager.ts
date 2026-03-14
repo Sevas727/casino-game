@@ -28,7 +28,7 @@ export class SpineManager {
     return this.spineAvailable;
   }
 
-  createAnimation(symbolId: string): Container | null {
+  createAnimation(_symbolId: string): Container | null {
     if (this.spineAvailable) {
       // Return real Spine animation
       // return new Spine(Assets.get(symbolId));

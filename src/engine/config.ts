@@ -1,4 +1,5 @@
-import { GameConfig, SymbolConfig, SymbolId } from './types';
+import type { GameConfig, SymbolConfig } from './types';
+import { SymbolId } from './types';
 
 const symbols: SymbolConfig[] = [
   {

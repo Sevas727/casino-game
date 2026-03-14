@@ -1,5 +1,3 @@
-import { Assets } from 'pixi.js';
-
 const SYMBOL_COLORS: Record<string, number> = {
   wild: 0xffd700,
   scatter: 0x8b0000,

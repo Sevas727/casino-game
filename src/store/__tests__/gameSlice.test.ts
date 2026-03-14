@@ -1,13 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import gameReducer, {
-  GameSliceState,
+  type GameSliceState,
   spin,
   setResult,
   setBet,
   increaseBet,
   decreaseBet,
 } from '../gameSlice';
-import { SpinResult, SymbolId } from '../../engine/types';
+import type { SpinResult } from '../../engine/types';
+import { SymbolId } from '../../engine/types';
 
 function getInitialState(): GameSliceState {
   return gameReducer(undefined, { type: '@@INIT' });

@@ -14,7 +14,7 @@ export class Reel extends Container {
   private _spinning = false;
   private _tickerCb: ((ticker: Ticker) => void) | null = null;
 
-  constructor(private colIndex: number) {
+  constructor(_colIndex: number) {
     super();
     this.buildSymbols();
   }

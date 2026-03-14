@@ -5,7 +5,7 @@ import { SpineManager } from '../spine/SpineManager';
 
 export class SymbolView extends Container {
   private bg: Graphics;
-  private label: Text;
+  private symbolLabel: Text;
   private _symbolId: SymbolId;
   private winEffect: Container | null = null;
 
@@ -19,11 +19,11 @@ export class SymbolView extends Container {
     this.drawSymbol(symbolId);
     this.addChild(this.bg);
 
-    this.label = new Text({ text: getSymbolLabel(symbolId), style: { fontSize: 28, fill: 0xffffff, fontWeight: 'bold' } });
-    this.label.anchor.set(0.5);
-    this.label.x = SymbolView.WIDTH / 2;
-    this.label.y = SymbolView.HEIGHT / 2;
-    this.addChild(this.label);
+    this.symbolLabel = new Text({ text: getSymbolLabel(symbolId), style: { fontSize: 28, fill: 0xffffff, fontWeight: 'bold' } });
+    this.symbolLabel.anchor.set(0.5);
+    this.symbolLabel.x = SymbolView.WIDTH / 2;
+    this.symbolLabel.y = SymbolView.HEIGHT / 2;
+    this.addChild(this.symbolLabel);
   }
 
   get symbolId(): SymbolId { return this._symbolId; }
@@ -32,7 +32,7 @@ export class SymbolView extends Container {
     this._symbolId = symbolId;
     this.bg.clear();
     this.drawSymbol(symbolId);
-    this.label.text = getSymbolLabel(symbolId);
+    this.symbolLabel.text = getSymbolLabel(symbolId);
   }
 
   private drawSymbol(symbolId: SymbolId): void {

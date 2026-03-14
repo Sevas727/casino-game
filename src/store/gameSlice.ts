@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GameState, ReelResult, WinResult, SpinResult, FreeSpinsState } from '../engine/types';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { GameState, ReelResult, WinResult, SpinResult, FreeSpinsState } from '../engine/types';
 import { GAME_CONFIG } from '../engine/config';
 
 export interface GameSliceState {

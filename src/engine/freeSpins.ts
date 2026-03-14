@@ -1,4 +1,4 @@
-import { FreeSpinsState } from './types';
+import type { FreeSpinsState } from './types';
 import { GAME_CONFIG } from './config';
 import { randomInt } from './rng';
 

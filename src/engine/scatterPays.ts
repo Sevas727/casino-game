@@ -1,5 +1,6 @@
-import { ReelResult, SymbolId, WinResult } from './types';
-import { getPayMultiplier, GAME_CONFIG } from './config';
+import type { ReelResult, WinResult } from './types';
+import { SymbolId } from './types';
+import { getPayMultiplier } from './config';
 
 export function calculateScatterPays(reels: ReelResult, bet: number): WinResult[] {
   const cols = reels.length;
