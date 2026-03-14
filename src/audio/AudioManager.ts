@@ -52,9 +52,9 @@ class AudioManager {
   setEnabled(enabled: boolean): void {
     this._enabled = enabled;
     Howler.mute(!enabled);
-    if (!enabled) {
-      this.stopMusic();
-    } else {
+    // Always stop first to ensure clean state
+    this.stopMusic();
+    if (enabled) {
       this.playMusic();
     }
   }
@@ -492,7 +492,10 @@ class AudioManager {
     if (!this._enabled || this._musicPlaying) return;
     try {
       const ctx = this.getContext();
-      if (!ctx) return;
+      if (!ctx) {
+        this._musicPlaying = false;
+        return;
+      }
 
       this._musicPlaying = true;
 
@@ -569,7 +572,8 @@ class AudioManager {
       loopDrums();
       this._musicInterval = setInterval(loopDrums, 800);
     } catch {
-      // Silently fail
+      // Reset state so music can be retried
+      this._musicPlaying = false;
     }
   }
 
