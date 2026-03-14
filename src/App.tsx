@@ -5,6 +5,8 @@ import { initPixiApp, destroyPixiApp } from './pixi/PixiApp';
 import { GameScene } from './pixi/scenes/GameScene';
 import { useResize } from './hooks/useResize';
 import { generateReelResult } from './engine/symbolGenerator';
+import { BottomBar } from './ui/BottomBar';
+import './styles/ui.css';
 
 function Game() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,6 +34,7 @@ function Game() {
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
       <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'absolute' }} />
+      <BottomBar />
     </div>
   );
 }

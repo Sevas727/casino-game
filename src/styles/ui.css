@@ -1,0 +1,105 @@
+.bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 10;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+}
+
+.balance-display, .win-display, .bet-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.balance-display .label, .bet-controls .label, .win-display .label {
+  font-size: 11px;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.balance-display .value, .win-display .value {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.win-display .value {
+  color: #ffd700;
+}
+
+.bet-controls {
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+.bet-controls .bet-value {
+  font-size: 20px;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: center;
+}
+
+.bet-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #666;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.bet-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.2);
+}
+
+.bet-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.spin-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid #ffd700;
+  background: linear-gradient(135deg, #2a1a0a, #4a2a0a);
+  color: #ffd700;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+
+.spin-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3a2a1a, #5a3a1a);
+  transform: scale(1.05);
+}
+
+.spin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spin-btn.spinning {
+  border-color: #ff4444;
+  color: #ff4444;
+}
