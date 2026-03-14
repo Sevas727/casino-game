@@ -12,6 +12,7 @@ export class SymbolView extends Container {
 
   static readonly WIDTH = 180;
   static readonly HEIGHT = 180;
+  static readonly GAP = 8;
 
   constructor(symbolId: SymbolId) {
     super();
@@ -25,9 +26,10 @@ export class SymbolView extends Container {
     this.addChild(this.bg);
     this.addChild(this.symbolLabel);
 
-    // Mask clips baked-in checkerboard outside cell bounds (1px overlap to avoid sub-pixel gaps)
+    // Mask with gap to reveal frame dividers between cells
+    const g = SymbolView.GAP / 2;
     const clipMask = new Graphics();
-    clipMask.rect(-1, -1, SymbolView.WIDTH + 2, SymbolView.HEIGHT + 2);
+    clipMask.rect(g, g, SymbolView.WIDTH - SymbolView.GAP, SymbolView.HEIGHT - SymbolView.GAP);
     clipMask.fill({ color: 0xffffff });
     this.addChild(clipMask);
     this.mask = clipMask;
@@ -46,11 +48,12 @@ export class SymbolView extends Container {
     const texture = getSymbolTexture(symbolId);
 
     if (texture) {
-      // Solid background slightly oversized to prevent sub-pixel gaps between cells
+      // Solid background within gap bounds
+      const g = SymbolView.GAP / 2;
       this.bg.clear();
       this.bg.visible = true;
-      this.bg.rect(-2, -2, SymbolView.WIDTH + 4, SymbolView.HEIGHT + 4);
-      this.bg.fill({ color: 0x3a3228 });
+      this.bg.rect(g, g, SymbolView.WIDTH - SymbolView.GAP, SymbolView.HEIGHT - SymbolView.GAP);
+      this.bg.fill({ color: 0x1a1510 });
       this.symbolLabel.visible = false;
 
       // Create or update sprite

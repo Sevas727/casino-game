@@ -1,6 +1,9 @@
-import { Container, type Application } from 'pixi.js';
+import { Container, Sprite, type Application } from 'pixi.js';
 import { Background } from '../components/Background';
 import { ReelsContainer } from '../components/ReelsContainer';
+import { getTexture } from '../utils/assetLoader';
+import { SymbolView } from '../components/SymbolView';
+import { GAME_CONFIG } from '../../engine/config';
 
 export class GameScene {
   public stage: Container;
@@ -29,12 +32,24 @@ export class GameScene {
     const background = new Background();
     this.backgroundLayer.addChild(background);
 
-    // Reels
+    // Frame behind reels — decorative stone border with column dividers
+    const frameTexture = getTexture('frame');
     this.reelsContainer = new ReelsContainer();
-    this.reelsLayer.addChild(this.reelsContainer);
 
-    // Frame not used as overlay — its center is opaque and would cover reels.
-    // Background image already provides the visual framing.
+    if (frameTexture) {
+      const totalWidth = GAME_CONFIG.cols * SymbolView.WIDTH;
+      const totalHeight = GAME_CONFIG.rows * SymbolView.HEIGHT;
+      const frameSprite = new Sprite(frameTexture);
+      const padX = 282;
+      const padY = 80;
+      frameSprite.x = this.reelsContainer.x - padX;
+      frameSprite.y = this.reelsContainer.y - padY;
+      frameSprite.width = totalWidth + padX * 2;
+      frameSprite.height = totalHeight + padY * 2;
+      this.reelsLayer.addChild(frameSprite);
+    }
+
+    this.reelsLayer.addChild(this.reelsContainer);
 
     this.app.stage.addChild(this.stage);
   }
@@ -42,10 +57,16 @@ export class GameScene {
   resize(width: number, height: number): void {
     const gameWidth = 1920;
     const gameHeight = 1080;
-    const scale = Math.min(width / gameWidth, height / gameHeight);
+
+    // Reserve space for bottom bar UI overlay
+    const isMobile = width <= 768;
+    const barHeight = isMobile ? 56 : 90;
+    const availableHeight = height - barHeight;
+    const scale = Math.min(width / gameWidth, availableHeight / gameHeight);
     this.stage.scale.set(scale);
     this.stage.x = (width - gameWidth * scale) / 2;
-    this.stage.y = (height - gameHeight * scale) / 2;
+
+    this.stage.y = (availableHeight - gameHeight * scale) / 2;
   }
 
   destroy(): void { this.stage.destroy({ children: true }); }

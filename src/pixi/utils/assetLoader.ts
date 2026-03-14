@@ -19,6 +19,7 @@ const SYMBOL_TEXTURES: Record<string, string> = {
 export async function loadAssets(): Promise<void> {
   const bundles = [
     { alias: 'background', src: '/assets/images/background.png' },
+    { alias: 'frame', src: '/assets/images/frame.png' },
     { alias: 'logo', src: '/assets/images/ui/logo.png' },
     ...Object.entries(SYMBOL_TEXTURES).map(([alias, src]) => ({ alias: `symbol_${alias}`, src })),
   ];

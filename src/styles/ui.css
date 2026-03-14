@@ -570,50 +570,56 @@
 /* ========== Mobile Portrait ========== */
 @media (max-width: 768px) {
   .bottom-bar {
-    height: 72px;
-    padding: 0 12px;
+    height: 56px;
+    padding: 0 8px;
+    gap: 4px;
   }
 
   .bar-left, .bar-center, .bar-right {
-    gap: 10px;
+    gap: 6px;
   }
 
   .balance-display .value, .bet-controls .bet-value, .win-display .value {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .balance-display .label, .bet-controls .label, .win-display .label {
-    font-size: 9px;
+    font-size: 8px;
   }
 
   .spin-btn {
-    width: 60px;
-    height: 60px;
-    font-size: 12px;
+    width: 48px;
+    height: 48px;
+    font-size: 11px;
+    letter-spacing: 1px;
   }
 
   .bet-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .bet-controls .bet-value {
+    min-width: 30px;
   }
 
   .auto-spin-btn, .turbo-btn {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
     font-size: 10px;
   }
 
   .sound-toggle, .rules-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 15px;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
   }
 
   .utility-buttons {
-    bottom: 82px;
-    left: 10px;
-    gap: 6px;
+    bottom: 62px;
+    left: 6px;
+    gap: 4px;
   }
 
   .free-spins-overlay {
