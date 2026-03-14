@@ -1,11 +1,13 @@
-import { Container, Graphics, Text } from 'pixi.js';
+import { Container, Graphics, Text, Ticker } from 'pixi.js';
 import { getSymbolColor, getSymbolLabel } from '../utils/assetLoader';
 import type { SymbolId } from '../../engine/types';
+import { SpineManager } from '../spine/SpineManager';
 
 export class SymbolView extends Container {
   private bg: Graphics;
   private label: Text;
   private _symbolId: SymbolId;
+  private winEffect: Container | null = null;
 
   static readonly WIDTH = 230;
   static readonly HEIGHT = 160;
@@ -38,5 +40,39 @@ export class SymbolView extends Container {
     this.bg.roundRect(4, 4, SymbolView.WIDTH - 8, SymbolView.HEIGHT - 8, 12);
     this.bg.fill({ color });
     this.bg.stroke({ color: 0x333333, width: 2 });
+  }
+
+  /** Play a win animation on this symbol (Spine when available, fallback glow otherwise). */
+  playWinAnimation(): void {
+    if (this.winEffect) return; // already playing
+
+    const spine = SpineManager.getInstance();
+    const spineAnim = spine.createAnimation(this._symbolId);
+
+    if (spineAnim) {
+      this.winEffect = spineAnim;
+    } else {
+      this.winEffect = spine.createFallbackWinEffect(SymbolView.WIDTH, SymbolView.HEIGHT);
+      const ticker = (this.winEffect as any)._winTicker as ((dt: any) => void) | undefined;
+      if (ticker) {
+        Ticker.shared.add(ticker);
+      }
+    }
+
+    this.addChild(this.winEffect);
+  }
+
+  /** Stop and remove the win animation from this symbol. */
+  stopWinAnimation(): void {
+    if (!this.winEffect) return;
+
+    const ticker = (this.winEffect as any)._winTicker as ((dt: any) => void) | undefined;
+    if (ticker) {
+      Ticker.shared.remove(ticker);
+    }
+
+    this.removeChild(this.winEffect);
+    this.winEffect.destroy({ children: true });
+    this.winEffect = null;
   }
 }
