@@ -1,11 +1,12 @@
-import { Container, Graphics, Text, Ticker } from 'pixi.js';
-import { getSymbolColor, getSymbolLabel } from '../utils/assetLoader';
+import { Container, Graphics, Text, Sprite, Ticker } from 'pixi.js';
+import { getSymbolTexture, getSymbolColor, getSymbolLabel } from '../utils/assetLoader';
 import type { SymbolId } from '../../engine/types';
 import { SpineManager } from '../spine/SpineManager';
 
 export class SymbolView extends Container {
   private bg: Graphics;
   private symbolLabel: Text;
+  private sprite: Sprite | null = null;
   private _symbolId: SymbolId;
   private winEffect: Container | null = null;
 
@@ -16,23 +17,61 @@ export class SymbolView extends Container {
     super();
     this._symbolId = symbolId;
     this.bg = new Graphics();
-    this.drawSymbol(symbolId);
-    this.addChild(this.bg);
-
     this.symbolLabel = new Text({ text: getSymbolLabel(symbolId), style: { fontSize: 28, fill: 0xffffff, fontWeight: 'bold' } });
     this.symbolLabel.anchor.set(0.5);
     this.symbolLabel.x = SymbolView.WIDTH / 2;
     this.symbolLabel.y = SymbolView.HEIGHT / 2;
+
+    this.addChild(this.bg);
     this.addChild(this.symbolLabel);
+
+    this.applySymbol(symbolId);
   }
 
   get symbolId(): SymbolId { return this._symbolId; }
 
   setSymbol(symbolId: SymbolId): void {
     this._symbolId = symbolId;
-    this.bg.clear();
-    this.drawSymbol(symbolId);
-    this.symbolLabel.text = getSymbolLabel(symbolId);
+    this.applySymbol(symbolId);
+  }
+
+  private applySymbol(symbolId: SymbolId): void {
+    const texture = getSymbolTexture(symbolId);
+
+    if (texture) {
+      // Hide fallback graphics and label
+      this.bg.clear();
+      this.bg.visible = false;
+      this.symbolLabel.visible = false;
+
+      // Create or update sprite
+      if (this.sprite) {
+        this.sprite.texture = texture;
+      } else {
+        this.sprite = new Sprite(texture);
+        this.sprite.anchor.set(0.5);
+        this.sprite.x = SymbolView.WIDTH / 2;
+        this.sprite.y = SymbolView.HEIGHT / 2;
+        this.addChildAt(this.sprite, 0);
+      }
+
+      // Scale sprite proportionally to fit within symbol dimensions
+      const scaleX = (SymbolView.WIDTH - 8) / texture.width;
+      const scaleY = (SymbolView.HEIGHT - 8) / texture.height;
+      const scale = Math.min(scaleX, scaleY);
+      this.sprite.scale.set(scale);
+      this.sprite.visible = true;
+    } else {
+      // Fallback to colored rectangle
+      if (this.sprite) {
+        this.sprite.visible = false;
+      }
+      this.bg.visible = true;
+      this.symbolLabel.visible = true;
+      this.bg.clear();
+      this.drawSymbol(symbolId);
+      this.symbolLabel.text = getSymbolLabel(symbolId);
+    }
   }
 
   private drawSymbol(symbolId: SymbolId): void {

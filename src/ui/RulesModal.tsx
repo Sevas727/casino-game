@@ -1,6 +1,5 @@
 import { GAME_CONFIG } from '../engine/config';
 import { SymbolId } from '../engine/types';
-import { getSymbolColor, getSymbolLabel } from '../pixi/utils/assetLoader';
 
 interface Props { onClose: () => void; }
 
@@ -16,9 +15,7 @@ export function RulesModal({ onClose }: Props) {
         <div className="symbols-grid">
           {/* Special symbols */}
           <div className="symbol-info">
-            <div className="symbol-preview" style={{ backgroundColor: '#' + getSymbolColor(SymbolId.SCATTER).toString(16).padStart(6, '0') }}>
-              {getSymbolLabel(SymbolId.SCATTER)}
-            </div>
+            <img src="/assets/images/symbols/scatter.png" alt="Scatter" className="symbol-preview-img" />
             <div className="symbol-pays">
               <div className="symbol-name">Free Spins</div>
               <div>5-25 &rarr; 50 fs</div>
@@ -27,9 +24,7 @@ export function RulesModal({ onClose }: Props) {
             </div>
           </div>
           <div className="symbol-info">
-            <div className="symbol-preview" style={{ backgroundColor: '#' + getSymbolColor(SymbolId.WILD).toString(16).padStart(6, '0') }}>
-              {getSymbolLabel(SymbolId.WILD)}
-            </div>
+            <img src="/assets/images/symbols/wild.png" alt="Wild" className="symbol-preview-img" />
             <div className="symbol-pays">
               <div className="symbol-name">Wild</div>
               <div>Replaces any symbol except scatter</div>
@@ -39,9 +34,7 @@ export function RulesModal({ onClose }: Props) {
           {/* Regular symbols with paytable */}
           {regularSymbols.map(sym => (
             <div key={sym.id} className="symbol-info">
-              <div className="symbol-preview" style={{ backgroundColor: '#' + getSymbolColor(sym.id).toString(16).padStart(6, '0') }}>
-                {getSymbolLabel(sym.id)}
-              </div>
+              <img src={`/assets/images/symbols/${sym.id}.png`} alt={sym.name} className="symbol-preview-img" />
               <div className="symbol-pays">
                 <div className="symbol-name">{sym.name}</div>
                 {sym.pays.map((pay, i) => (

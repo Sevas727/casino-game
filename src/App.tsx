@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { initPixiApp, destroyPixiApp } from './pixi/PixiApp';
 import { GameScene } from './pixi/scenes/GameScene';
+import { loadAssets } from './pixi/utils/assetLoader';
 import { useResize } from './hooks/useResize';
 import { useGameLoop } from './hooks/useGameLoop';
 import { generateReelResult } from './engine/symbolGenerator';
@@ -22,7 +23,8 @@ function Game() {
     if (!containerRef.current) return;
     let gameScene: GameScene;
 
-    initPixiApp(containerRef.current).then(app => {
+    initPixiApp(containerRef.current).then(async (app) => {
+      await loadAssets();
       gameScene = new GameScene(app);
       gameScene.resize(app.screen.width, app.screen.height);
       gameScene.reelsContainer.setReelResult(generateReelResult());
