@@ -25,6 +25,13 @@ export class SymbolView extends Container {
     this.addChild(this.bg);
     this.addChild(this.symbolLabel);
 
+    // Mask clips baked-in checkerboard outside cell bounds (1px overlap to avoid sub-pixel gaps)
+    const clipMask = new Graphics();
+    clipMask.rect(-1, -1, SymbolView.WIDTH + 2, SymbolView.HEIGHT + 2);
+    clipMask.fill({ color: 0xffffff });
+    this.addChild(clipMask);
+    this.mask = clipMask;
+
     this.applySymbol(symbolId);
   }
 
@@ -39,10 +46,10 @@ export class SymbolView extends Container {
     const texture = getSymbolTexture(symbolId);
 
     if (texture) {
-      // Solid background fills entire cell edge-to-edge (no gaps, no rounded corners)
+      // Solid background slightly oversized to prevent sub-pixel gaps between cells
       this.bg.clear();
       this.bg.visible = true;
-      this.bg.rect(0, 0, SymbolView.WIDTH, SymbolView.HEIGHT);
+      this.bg.rect(-2, -2, SymbolView.WIDTH + 4, SymbolView.HEIGHT + 4);
       this.bg.fill({ color: 0x3a3228 });
       this.symbolLabel.visible = false;
 
@@ -60,7 +67,7 @@ export class SymbolView extends Container {
       // Scale sprite to fully cover the cell (no gaps)
       const scaleX = SymbolView.WIDTH / texture.width;
       const scaleY = SymbolView.HEIGHT / texture.height;
-      const scale = Math.max(scaleX, scaleY) * 1.02;
+      const scale = Math.max(scaleX, scaleY);
       this.sprite.scale.set(scale);
       this.sprite.visible = true;
     } else {
