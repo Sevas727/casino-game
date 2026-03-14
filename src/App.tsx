@@ -4,6 +4,7 @@ import { store } from './store/store';
 import { initPixiApp, destroyPixiApp } from './pixi/PixiApp';
 import { GameScene } from './pixi/scenes/GameScene';
 import { useResize } from './hooks/useResize';
+import { generateReelResult } from './engine/symbolGenerator';
 
 function Game() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -16,6 +17,7 @@ function Game() {
     initPixiApp(containerRef.current).then(app => {
       gameScene = new GameScene(app);
       gameScene.resize(app.screen.width, app.screen.height);
+      gameScene.reelsContainer.setReelResult(generateReelResult());
       setScene(gameScene);
     });
 

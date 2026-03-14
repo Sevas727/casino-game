@@ -1,4 +1,6 @@
 import { Container, type Application } from 'pixi.js';
+import { Background } from '../components/Background';
+import { ReelsContainer } from '../components/ReelsContainer';
 
 export class GameScene {
   public stage: Container;
@@ -6,6 +8,7 @@ export class GameScene {
   public reelsLayer: Container;
   public winLayer: Container;
   public overlayLayer: Container;
+  public reelsContainer: ReelsContainer;
 
   constructor(private app: Application) {
     this.stage = new Container();
@@ -18,6 +21,14 @@ export class GameScene {
     this.stage.addChild(this.reelsLayer);
     this.stage.addChild(this.winLayer);
     this.stage.addChild(this.overlayLayer);
+
+    // Background
+    const background = new Background();
+    this.backgroundLayer.addChild(background);
+
+    // Reels
+    this.reelsContainer = new ReelsContainer();
+    this.reelsLayer.addChild(this.reelsContainer);
 
     this.app.stage.addChild(this.stage);
   }
