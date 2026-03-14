@@ -1,4 +1,4 @@
-import { Application, Container, Ticker } from 'pixi.js';
+import { Application, Container, Graphics, Ticker } from 'pixi.js';
 import { SymbolView } from './SymbolView';
 import type { SymbolId } from '../../engine/types';
 import { GAME_CONFIG } from '../../engine/config';
@@ -13,6 +13,7 @@ export class Reel extends Container {
   public symbols: SymbolView[] = [];
   private _spinning = false;
   private _tickerCb: ((ticker: Ticker) => void) | null = null;
+  private _blurOverlay: Graphics | null = null;
 
   constructor(_colIndex: number) {
     super();
@@ -50,11 +51,19 @@ export class Reel extends Container {
 
     const speed = getSpinConfig(false).speed; // initial speed, will be overridden on stop
 
+    // Add blur overlay to simulate motion blur
+    this._blurOverlay = new Graphics();
+    this._blurOverlay.rect(0, -BUFFER_SYMBOLS * SymbolView.HEIGHT, SymbolView.WIDTH, (GAME_CONFIG.rows + BUFFER_SYMBOLS) * SymbolView.HEIGHT);
+    this._blurOverlay.fill({ color: 0x1a0a2e, alpha: 0.3 });
+    this.addChild(this._blurOverlay);
+
     this._tickerCb = (ticker: Ticker) => {
       const delta = ticker.deltaTime; // ~1.0 at 60fps
       const moveAmount = speed * delta;
 
+      // During spinning, make symbols semi-transparent for motion blur feel
       for (const sym of this.symbols) {
+        sym.alpha = 0.6;
         sym.y += moveAmount;
       }
 
@@ -90,6 +99,17 @@ export class Reel extends Container {
         this._tickerCb = null;
       }
       this._spinning = false;
+
+      // Remove blur overlay
+      if (this._blurOverlay) {
+        this.removeChild(this._blurOverlay);
+        this._blurOverlay.destroy();
+        this._blurOverlay = null;
+      }
+      // Restore symbol alphas
+      for (const sym of this.symbols) {
+        sym.alpha = 1.0;
+      }
 
       const config = getSpinConfig(turbo);
 
@@ -156,6 +176,17 @@ export class Reel extends Container {
       this._tickerCb = null;
     }
     this._spinning = false;
+
+    // Remove blur overlay
+    if (this._blurOverlay) {
+      this.removeChild(this._blurOverlay);
+      this._blurOverlay.destroy();
+      this._blurOverlay = null;
+    }
+    // Restore symbol alphas
+    for (const sym of this.symbols) {
+      sym.alpha = 1.0;
+    }
 
     const totalSlots = GAME_CONFIG.rows + BUFFER_SYMBOLS;
     for (let i = 0; i < totalSlots; i++) {

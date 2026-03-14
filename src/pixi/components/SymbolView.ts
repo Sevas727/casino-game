@@ -10,8 +10,8 @@ export class SymbolView extends Container {
   private _symbolId: SymbolId;
   private winEffect: Container | null = null;
 
-  static readonly WIDTH = 230;
-  static readonly HEIGHT = 160;
+  static readonly WIDTH = 180;
+  static readonly HEIGHT = 180;
 
   constructor(symbolId: SymbolId) {
     super();
@@ -39,9 +39,11 @@ export class SymbolView extends Container {
     const texture = getSymbolTexture(symbolId);
 
     if (texture) {
-      // Hide fallback graphics and label
+      // Solid background fills entire cell edge-to-edge (no gaps, no rounded corners)
       this.bg.clear();
-      this.bg.visible = false;
+      this.bg.visible = true;
+      this.bg.rect(0, 0, SymbolView.WIDTH, SymbolView.HEIGHT);
+      this.bg.fill({ color: 0x3a3228 });
       this.symbolLabel.visible = false;
 
       // Create or update sprite
@@ -52,13 +54,13 @@ export class SymbolView extends Container {
         this.sprite.anchor.set(0.5);
         this.sprite.x = SymbolView.WIDTH / 2;
         this.sprite.y = SymbolView.HEIGHT / 2;
-        this.addChildAt(this.sprite, 0);
+        this.addChildAt(this.sprite, 1);
       }
 
-      // Scale sprite proportionally to fit within symbol dimensions
-      const scaleX = (SymbolView.WIDTH - 8) / texture.width;
-      const scaleY = (SymbolView.HEIGHT - 8) / texture.height;
-      const scale = Math.min(scaleX, scaleY);
+      // Scale sprite to fully cover the cell (no gaps)
+      const scaleX = SymbolView.WIDTH / texture.width;
+      const scaleY = SymbolView.HEIGHT / texture.height;
+      const scale = Math.max(scaleX, scaleY) * 1.02;
       this.sprite.scale.set(scale);
       this.sprite.visible = true;
     } else {

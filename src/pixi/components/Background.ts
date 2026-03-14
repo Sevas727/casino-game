@@ -5,13 +5,25 @@ export class Background extends Container {
   constructor() {
     super();
 
-    // Background image or fallback
+    // Solid fill behind everything
+    const solidBg = new Graphics();
+    solidBg.rect(0, 0, 1920, 1080);
+    solidBg.fill({ color: 0x1a0a2e });
+    this.addChild(solidBg);
+
+    // Background image (opaque jungle scene)
     const bgTexture = getTexture('background');
     if (bgTexture) {
       const bgSprite = new Sprite(bgTexture);
       bgSprite.width = 1920;
       bgSprite.height = 1080;
       this.addChild(bgSprite);
+
+      // Cover Gemini AI watermark in bottom-right corner
+      const watermarkCover = new Graphics();
+      watermarkCover.rect(1875, 1045, 50, 40);
+      watermarkCover.fill({ color: 0x2a4a1a });
+      this.addChild(watermarkCover);
     } else {
       const bg = new Graphics();
       bg.rect(0, 0, 1920, 1080);
@@ -19,46 +31,14 @@ export class Background extends Container {
       this.addChild(bg);
     }
 
-    // Left totem
-    const leftTotemTexture = getTexture('totem_left');
-    if (leftTotemTexture) {
-      const leftTotem = new Sprite(leftTotemTexture);
-      // Scale to fit roughly the totem area
-      const totemScale = 800 / leftTotemTexture.height;
-      leftTotem.scale.set(totemScale);
-      leftTotem.x = 0;
-      leftTotem.y = 100;
-      this.addChild(leftTotem);
-    } else {
-      const leftTotem = new Graphics();
-      leftTotem.rect(0, 100, 120, 800);
-      leftTotem.fill({ color: 0x5a4a3a });
-      this.addChild(leftTotem);
-    }
+    // Skip totem sprites - they have checkerboard baked into their transparent areas.
+    // The background image already contains integrated pillar/vegetation art.
 
-    // Right totem
-    const rightTotemTexture = getTexture('totem_right');
-    if (rightTotemTexture) {
-      const rightTotem = new Sprite(rightTotemTexture);
-      const totemScale = 800 / rightTotemTexture.height;
-      rightTotem.scale.set(totemScale);
-      rightTotem.anchor.set(1, 0);
-      rightTotem.x = 1920;
-      rightTotem.y = 100;
-      this.addChild(rightTotem);
-    } else {
-      const rightTotem = new Graphics();
-      rightTotem.rect(1800, 100, 120, 800);
-      rightTotem.fill({ color: 0x5a4a3a });
-      this.addChild(rightTotem);
-    }
-
-    // Logo or title text
+    // Logo
     const logoTexture = getTexture('logo');
     if (logoTexture) {
       const logo = new Sprite(logoTexture);
       logo.anchor.set(0.5, 0);
-      // Scale logo to reasonable size
       const logoScale = Math.min(400 / logoTexture.width, 100 / logoTexture.height);
       logo.scale.set(logoScale);
       logo.x = 960;

@@ -17,6 +17,12 @@ export class ReelsContainer extends Container {
     this.x = (1920 - totalWidth) / 2;
     this.y = (1080 - totalHeight) / 2;
 
+    // Solid dark background behind reels to prevent checkerboard transparency
+    const reelBg = new Graphics();
+    reelBg.rect(-4, -4, totalWidth + 8, totalHeight + 8);
+    reelBg.fill({ color: 0x1a0a2e });
+    this.addChild(reelBg);
+
     for (let col = 0; col < GAME_CONFIG.cols; col++) {
       const reel = new Reel(col);
       reel.x = col * SymbolView.WIDTH;

@@ -1,8 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { selectGameState, spin } from '../store/gameSlice';
+import { selectGameState, selectAutoSpins, spin } from '../store/gameSlice';
 
 export function SpinButton() {
   const gameState = useSelector(selectGameState);
+  const autoSpins = useSelector(selectAutoSpins);
   const dispatch = useDispatch();
 
   const isSpinning = gameState === 'spinning';
@@ -18,12 +19,17 @@ export function SpinButton() {
   if (isSpinning) label = 'STOP';
 
   return (
-    <button
-      className={`spin-btn${isSpinning ? ' spinning' : ''}`}
-      onClick={handleClick}
-      disabled={isDisabled}
-    >
-      {label}
-    </button>
+    <div className="spin-btn-wrapper">
+      <button
+        className={`spin-btn${isSpinning ? ' spinning' : ''}`}
+        onClick={handleClick}
+        disabled={isDisabled}
+      >
+        {label}
+      </button>
+      {autoSpins > 0 && (
+        <span className="auto-spin-count">{autoSpins}</span>
+      )}
+    </div>
   );
 }
