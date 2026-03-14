@@ -37,7 +37,7 @@ export class ReelsContainer extends Container {
     this.addChild(mask);
     this.mask = mask;
 
-    // Frame border
+    // Simple stroke frame fallback (image frame added outside mask in GameScene)
     const frame = new Graphics();
     frame.rect(-4, -4, totalWidth + 8, totalHeight + 8);
     frame.stroke({ color: 0x8b7355, width: 6 });

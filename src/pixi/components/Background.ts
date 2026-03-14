@@ -31,8 +31,7 @@ export class Background extends Container {
       this.addChild(bg);
     }
 
-    // Skip totem sprites - they have checkerboard baked into their transparent areas.
-    // The background image already contains integrated pillar/vegetation art.
+    // Totems not added — background image already contains integrated pillar art.
 
     // Logo
     const logoTexture = getTexture('logo');

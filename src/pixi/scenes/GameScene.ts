@@ -33,6 +33,9 @@ export class GameScene {
     this.reelsContainer = new ReelsContainer();
     this.reelsLayer.addChild(this.reelsContainer);
 
+    // Frame not used as overlay — its center is opaque and would cover reels.
+    // Background image already provides the visual framing.
+
     this.app.stage.addChild(this.stage);
   }
 
