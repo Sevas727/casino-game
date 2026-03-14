@@ -48,12 +48,8 @@ export class SymbolView extends Container {
     const texture = getSymbolTexture(symbolId);
 
     if (texture) {
-      // Solid background within gap bounds
-      const g = SymbolView.GAP / 2;
       this.bg.clear();
-      this.bg.visible = true;
-      this.bg.rect(g, g, SymbolView.WIDTH - SymbolView.GAP, SymbolView.HEIGHT - SymbolView.GAP);
-      this.bg.fill({ color: 0x1a1510 });
+      this.bg.visible = false;
       this.symbolLabel.visible = false;
 
       // Create or update sprite
