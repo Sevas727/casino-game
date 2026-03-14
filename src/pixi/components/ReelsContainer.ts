@@ -3,7 +3,7 @@ import { Reel } from './Reel';
 import { SymbolView } from './SymbolView';
 import { GAME_CONFIG } from '../../engine/config';
 import type { ReelResult } from '../../engine/types';
-import { getSpinConfig } from '../animations/ReelSpinAnimation';
+import { BUFFER_SYMBOLS, getSpinConfig } from '../animations/ReelSpinAnimation';
 
 export class ReelsContainer extends Container {
   public reels: Reel[] = [];
@@ -74,6 +74,32 @@ export class ReelsContainer extends Container {
             }
           });
         }, delay);
+      });
+    });
+  }
+
+  /** Dim non-winning symbols and brighten winning ones */
+  highlightWinSymbols(positions: { col: number; row: number }[]): void {
+    const posSet = new Set(positions.map((p) => `${p.col},${p.row}`));
+    this.reels.forEach((reel, col) => {
+      reel.symbols.forEach((sym, idx) => {
+        // Only consider visible symbols (skip buffer)
+        const row = idx - BUFFER_SYMBOLS;
+        if (row < 0 || row >= GAME_CONFIG.rows) return;
+        if (posSet.has(`${col},${row}`)) {
+          sym.alpha = 1.0;
+        } else {
+          sym.alpha = 0.3;
+        }
+      });
+    });
+  }
+
+  /** Restore all symbol alphas to 1.0 */
+  clearHighlights(): void {
+    this.reels.forEach((reel) => {
+      reel.symbols.forEach((sym) => {
+        sym.alpha = 1.0;
       });
     });
   }

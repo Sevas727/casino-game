@@ -6,12 +6,15 @@ import {
   selectFreeSpins,
   selectAutoSpins,
   selectBalance,
+  selectWins,
+  selectTotalWin,
   setResult,
   winAnimationComplete,
   decrementAutoSpins,
   spin,
 } from '../store/gameSlice';
 import { selectTurboMode } from '../store/settingsSlice';
+import { showWin, clearWin } from '../pixi/animations/WinAnimation';
 import { executeSpin } from '../engine/spinEngine';
 import { getPixiApp } from '../pixi/PixiApp';
 import type { GameScene } from '../pixi/scenes/GameScene';
@@ -25,6 +28,8 @@ export function useGameLoop(scene: GameScene | null): void {
   const turbo = useSelector(selectTurboMode);
   const autoSpinsRemaining = useSelector(selectAutoSpins);
   const balance = useSelector(selectBalance);
+  const wins = useSelector(selectWins);
+  const totalWin = useSelector(selectTotalWin);
   const prevGameState = useRef<GameState>(gameState);
 
   useEffect(() => {
@@ -54,8 +59,13 @@ export function useGameLoop(scene: GameScene | null): void {
       }
 
       if (gameState === 'showing-win') {
+        // Show win animation: highlight winning symbols and add glow effects
+        const reelsContainer = scene.reelsContainer;
+        showWin(reelsContainer, wins, scene.winLayer, totalWin, bet);
+
         const winDuration = turbo ? 1000 : 2000;
         setTimeout(() => {
+          clearWin(reelsContainer, scene.winLayer);
           dispatch(winAnimationComplete());
         }, winDuration);
       }
@@ -71,5 +81,5 @@ export function useGameLoop(scene: GameScene | null): void {
         }
       }
     }
-  }, [gameState, scene, dispatch, bet, freeSpins, turbo, autoSpinsRemaining, balance]);
+  }, [gameState, scene, dispatch, bet, freeSpins, turbo, autoSpinsRemaining, balance, wins, totalWin]);
 }
