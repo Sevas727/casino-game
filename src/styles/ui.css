@@ -297,3 +297,80 @@
   line-height: 1.6;
   margin-bottom: 12px;
 }
+
+/* Mobile portrait */
+@media (max-width: 768px) {
+  .bottom-bar {
+    height: 64px;
+    padding: 0 12px;
+  }
+
+  .balance-display .value, .bet-controls .bet-value, .win-display .value {
+    font-size: 16px;
+  }
+
+  .balance-display .label, .bet-controls .label, .win-display .label {
+    font-size: 9px;
+  }
+
+  .spin-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 11px;
+  }
+
+  .bet-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .auto-spin-btn, .turbo-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 10px;
+  }
+
+  .sound-toggle, .rules-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .rules-btn { left: 60px; }
+
+  .free-spins-overlay {
+    top: 8px;
+    right: 8px;
+    padding: 8px 12px;
+  }
+
+  .free-spins-header { font-size: 18px; }
+  .free-spins-remaining { font-size: 14px; }
+}
+
+/* Landscape on mobile */
+@media (max-height: 500px) {
+  .bottom-bar {
+    height: 50px;
+    padding: 0 8px;
+  }
+
+  .spin-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 10px;
+  }
+}
+
+/* Rules modal on mobile */
+@media (max-width: 600px) {
+  .rules-content {
+    padding: 16px;
+    width: 95%;
+  }
+
+  .symbols-grid {
+    grid-template-columns: 1fr;
+  }
+}
