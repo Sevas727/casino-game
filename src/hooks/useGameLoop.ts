@@ -18,6 +18,7 @@ import {
 import { selectTurboMode } from '../store/settingsSlice';
 import { showWin, clearWin } from '../pixi/animations/WinAnimation';
 import { executeSpin } from '../engine/spinEngine';
+import { audioManager } from '../audio/AudioManager';
 import { getPixiApp } from '../pixi/PixiApp';
 import type { GameScene } from '../pixi/scenes/GameScene';
 import type { GameState } from '../engine/types';
@@ -45,6 +46,7 @@ export function useGameLoop(scene: GameScene | null): void {
 
       if (gameState === 'spinning' && prev === 'idle') {
         // Start reel spin animation
+        audioManager.playSfx('spin');
         const reelsContainer = scene.reelsContainer;
         reelsContainer.startSpin(app);
 
@@ -56,6 +58,7 @@ export function useGameLoop(scene: GameScene | null): void {
 
         setTimeout(async () => {
           await reelsContainer.stopReels(result.reels, app, turbo);
+          audioManager.playSfx('reelStop');
           // Tick free spin counter before setting result
           if (freeSpins.active) {
             dispatch(freeSpinTick());
@@ -66,6 +69,12 @@ export function useGameLoop(scene: GameScene | null): void {
 
       if (gameState === 'showing-win') {
         // Show win animation: highlight winning symbols and add glow effects
+        const isBigWin = totalWin >= bet * 10;
+        if (isBigWin) {
+          audioManager.playSfx('bigWin');
+        } else {
+          audioManager.playSfx('win');
+        }
         const reelsContainer = scene.reelsContainer;
         showWin(reelsContainer, wins, scene.winLayer, totalWin, bet);
 
@@ -78,6 +87,8 @@ export function useGameLoop(scene: GameScene | null): void {
 
       // Handle free spins intro: show overlay for 2 seconds then transition to idle
       if (gameState === 'free-spins-intro') {
+        audioManager.playSfx('scatter');
+        audioManager.playSfx('freeSpinsIntro');
         const introDuration = turbo ? 1000 : 2000;
         setTimeout(() => {
           dispatch(endFreeSpinsIntro());

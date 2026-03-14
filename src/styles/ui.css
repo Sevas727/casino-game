@@ -138,6 +138,25 @@
 .auto-spin-options button:hover { background: rgba(255,255,255,0.1); }
 .auto-spin-wrapper { position: relative; }
 
+/* Sound Toggle */
+.sound-toggle {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #666;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Free Spins Overlay */
 .free-spins-overlay {
   position: absolute;
