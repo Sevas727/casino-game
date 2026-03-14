@@ -103,3 +103,37 @@
   border-color: #ff4444;
   color: #ff4444;
 }
+
+.auto-spin-btn, .turbo-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #666;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.auto-spin-btn.active { border-color: #ff4444; color: #ff4444; }
+.turbo-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255,215,0,0.15); }
+.auto-spin-options {
+  position: absolute;
+  bottom: 60px;
+  background: rgba(0,0,0,0.9);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.auto-spin-options button {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+.auto-spin-options button:hover { background: rgba(255,255,255,0.1); }
+.auto-spin-wrapper { position: relative; }

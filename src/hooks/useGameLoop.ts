@@ -4,8 +4,12 @@ import {
   selectGameState,
   selectBet,
   selectFreeSpins,
+  selectAutoSpins,
+  selectBalance,
   setResult,
   winAnimationComplete,
+  decrementAutoSpins,
+  spin,
 } from '../store/gameSlice';
 import { selectTurboMode } from '../store/settingsSlice';
 import { executeSpin } from '../engine/spinEngine';
@@ -19,6 +23,8 @@ export function useGameLoop(scene: GameScene | null): void {
   const bet = useSelector(selectBet);
   const freeSpins = useSelector(selectFreeSpins);
   const turbo = useSelector(selectTurboMode);
+  const autoSpinsRemaining = useSelector(selectAutoSpins);
+  const balance = useSelector(selectBalance);
   const prevGameState = useRef<GameState>(gameState);
 
   useEffect(() => {
@@ -53,6 +59,17 @@ export function useGameLoop(scene: GameScene | null): void {
           dispatch(winAnimationComplete());
         }, winDuration);
       }
+
+      // Auto-spin: when returning to idle from spinning (no win) or showing-win
+      if (gameState === 'idle' && (prev === 'showing-win' || prev === 'spinning')) {
+        if (autoSpinsRemaining > 0 && balance >= bet) {
+          const delay = turbo ? 150 : 300;
+          setTimeout(() => {
+            dispatch(decrementAutoSpins());
+            dispatch(spin());
+          }, delay);
+        }
+      }
     }
-  }, [gameState, scene, dispatch, bet, freeSpins, turbo]);
+  }, [gameState, scene, dispatch, bet, freeSpins, turbo, autoSpinsRemaining, balance]);
 }
