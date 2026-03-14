@@ -137,3 +137,38 @@
 }
 .auto-spin-options button:hover { background: rgba(255,255,255,0.1); }
 .auto-spin-wrapper { position: relative; }
+
+/* Free Spins Overlay */
+.free-spins-overlay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 16px 24px;
+  color: #fff;
+  text-align: center;
+  z-index: 20;
+}
+.free-spins-header {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 8px;
+}
+.free-spins-remaining {
+  font-size: 18px;
+  color: #aaa;
+}
+.free-spins-multiplier {
+  font-size: 32px;
+  font-weight: bold;
+  color: #ff4444;
+  margin: 8px 0;
+}
+.free-spins-total-win {
+  font-size: 16px;
+  color: #ffd700;
+  margin-top: 8px;
+}

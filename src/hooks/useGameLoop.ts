@@ -12,6 +12,8 @@ import {
   winAnimationComplete,
   decrementAutoSpins,
   spin,
+  endFreeSpinsIntro,
+  freeSpinTick,
 } from '../store/gameSlice';
 import { selectTurboMode } from '../store/settingsSlice';
 import { showWin, clearWin } from '../pixi/animations/WinAnimation';
@@ -54,6 +56,10 @@ export function useGameLoop(scene: GameScene | null): void {
 
         setTimeout(async () => {
           await reelsContainer.stopReels(result.reels, app, turbo);
+          // Tick free spin counter before setting result
+          if (freeSpins.active) {
+            dispatch(freeSpinTick());
+          }
           dispatch(setResult(result));
         }, minTime);
       }
@@ -70,9 +76,23 @@ export function useGameLoop(scene: GameScene | null): void {
         }, winDuration);
       }
 
-      // Auto-spin: when returning to idle from spinning (no win) or showing-win
-      if (gameState === 'idle' && (prev === 'showing-win' || prev === 'spinning')) {
-        if (autoSpinsRemaining > 0 && balance >= bet) {
+      // Handle free spins intro: show overlay for 2 seconds then transition to idle
+      if (gameState === 'free-spins-intro') {
+        const introDuration = turbo ? 1000 : 2000;
+        setTimeout(() => {
+          dispatch(endFreeSpinsIntro());
+        }, introDuration);
+      }
+
+      // When returning to idle, handle auto-spinning
+      if (gameState === 'idle' && (prev === 'showing-win' || prev === 'spinning' || prev === 'free-spins-intro')) {
+        // Free spins take priority over auto spins
+        if (freeSpins.active && freeSpins.remaining > 0) {
+          const delay = turbo ? 300 : 800;
+          setTimeout(() => {
+            dispatch(spin());
+          }, delay);
+        } else if (autoSpinsRemaining > 0 && balance >= bet) {
           const delay = turbo ? 150 : 300;
           setTimeout(() => {
             dispatch(decrementAutoSpins());

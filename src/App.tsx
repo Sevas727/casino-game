@@ -7,6 +7,7 @@ import { useResize } from './hooks/useResize';
 import { useGameLoop } from './hooks/useGameLoop';
 import { generateReelResult } from './engine/symbolGenerator';
 import { BottomBar } from './ui/BottomBar';
+import { FreeSpinsOverlay } from './ui/FreeSpinsOverlay';
 import './styles/ui.css';
 
 function Game() {
@@ -36,6 +37,7 @@ function Game() {
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
       <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'absolute' }} />
+      <FreeSpinsOverlay />
       <BottomBar />
     </div>
   );

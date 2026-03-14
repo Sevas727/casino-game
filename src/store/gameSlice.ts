@@ -38,10 +38,18 @@ const gameSlice = createSlice({
   reducers: {
     spin(state) {
       if (state.gameState !== 'idle') return;
-      state.balance -= state.bet;
+      if (!state.freeSpins.active) {
+        state.balance -= state.bet;
+      }
       state.gameState = 'spinning';
       state.wins = [];
       state.totalWin = 0;
+    },
+
+    endFreeSpinsIntro(state) {
+      if (state.gameState === 'free-spins-intro') {
+        state.gameState = 'idle';
+      }
     },
 
     setResult(state, action: PayloadAction<SpinResult>) {
@@ -65,6 +73,9 @@ const gameSlice = createSlice({
         }
         state.gameState = 'free-spins-intro';
       } else if (totalWin > 0) {
+        if (state.freeSpins.active) {
+          state.freeSpins.totalWin += totalWin;
+        }
         state.balance += totalWin;
         state.gameState = 'showing-win';
       } else {
@@ -73,9 +84,6 @@ const gameSlice = createSlice({
     },
 
     winAnimationComplete(state) {
-      if (state.freeSpins.active) {
-        state.freeSpins.totalWin += state.totalWin;
-      }
       state.gameState = 'idle';
     },
 
@@ -132,6 +140,7 @@ export const {
   setResult,
   winAnimationComplete,
   freeSpinTick,
+  endFreeSpinsIntro,
   setBet,
   increaseBet,
   decreaseBet,
