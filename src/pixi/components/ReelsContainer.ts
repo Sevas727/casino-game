@@ -1,8 +1,9 @@
-import { Container, Graphics } from 'pixi.js';
+import { Application, Container, Graphics } from 'pixi.js';
 import { Reel } from './Reel';
 import { SymbolView } from './SymbolView';
 import { GAME_CONFIG } from '../../engine/config';
 import type { ReelResult } from '../../engine/types';
+import { getSpinConfig } from '../animations/ReelSpinAnimation';
 
 export class ReelsContainer extends Container {
   public reels: Reel[] = [];
@@ -38,6 +39,50 @@ export class ReelsContainer extends Container {
   }
 
   setReelResult(result: ReelResult): void {
-    result.forEach((col, i) => { if (this.reels[i]) this.reels[i].setSymbols(col); });
+    result.forEach((col, i) => {
+      if (this.reels[i]) this.reels[i].setSymbols(col);
+    });
+  }
+
+  /** Start all reels spinning */
+  startSpin(app: Application): void {
+    for (const reel of this.reels) {
+      reel.startSpin(app);
+    }
+  }
+
+  /** Stop reels sequentially left-to-right with configurable delay */
+  stopReels(
+    result: ReelResult,
+    app: Application,
+    turbo: boolean,
+  ): Promise<void> {
+    const config = getSpinConfig(turbo);
+
+    return new Promise<void>((resolve) => {
+      let stoppedCount = 0;
+
+      this.reels.forEach((reel, index) => {
+        const delay = index * config.delayBetweenReels;
+
+        setTimeout(() => {
+          const finalSymbols = result[index] || [];
+          reel.stopSpin(finalSymbols, turbo, app).then(() => {
+            stoppedCount++;
+            if (stoppedCount === this.reels.length) {
+              resolve();
+            }
+          });
+        }, delay);
+      });
+    });
+  }
+
+  /** Immediately show final result (for STOP button) */
+  forceStop(result: ReelResult, app: Application): void {
+    this.reels.forEach((reel, index) => {
+      const finalSymbols = result[index] || [];
+      reel.forceSetSymbols(finalSymbols, app);
+    });
   }
 }
