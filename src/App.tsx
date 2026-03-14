@@ -36,7 +36,7 @@ function Game() {
       gameScene.reelsContainer.setReelResult(generateReelResult());
       setScene(gameScene);
       setLoading(false);
-      audioManager.playMusic();
+      audioManager.init();
     });
 
     return () => {

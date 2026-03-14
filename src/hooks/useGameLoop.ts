@@ -47,6 +47,7 @@ export function useGameLoop(scene: GameScene | null): void {
       if (gameState === 'spinning' && prev === 'idle') {
         // Start reel spin animation
         audioManager.playSfx('spin');
+        audioManager.startSpinLoop();
         const reelsContainer = scene.reelsContainer;
         reelsContainer.startSpin(app);
 
@@ -57,6 +58,7 @@ export function useGameLoop(scene: GameScene | null): void {
         const minTime = turbo ? 200 : 500;
 
         setTimeout(async () => {
+          audioManager.stopSpinLoop();
           await reelsContainer.stopReels(result.reels, app, turbo);
           audioManager.playSfx('reelStop');
           // Tick free spin counter before setting result

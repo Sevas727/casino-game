@@ -8,6 +8,8 @@ class AudioManager {
   private _musicNodes: (AudioBufferSourceNode | OscillatorNode | GainNode)[] = [];
   private _musicInterval: ReturnType<typeof setInterval> | null = null;
   private _musicPlaying = false;
+  private _spinLoopNodes: (AudioBufferSourceNode | OscillatorNode | GainNode | BiquadFilterNode)[] = [];
+  private _spinLoopPlaying = false;
 
   get enabled(): boolean { return this._enabled; }
 
@@ -26,7 +28,25 @@ class AudioManager {
   }
 
   init(): void {
-    // Pre-initialize audio context on user gesture
+    // Try to play music immediately (works if context already unlocked)
+    this.playMusic();
+
+    // Also listen for first user gesture in case context is still locked
+    const startOnGesture = (): void => {
+      // Resume suspended context and start music
+      const ctx = this.getContext();
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().then(() => this.playMusic());
+      } else {
+        this.playMusic();
+      }
+      document.removeEventListener('click', startOnGesture);
+      document.removeEventListener('touchstart', startOnGesture);
+      document.removeEventListener('keydown', startOnGesture);
+    };
+    document.addEventListener('click', startOnGesture);
+    document.addEventListener('touchstart', startOnGesture);
+    document.addEventListener('keydown', startOnGesture);
   }
 
   setEnabled(enabled: boolean): void {
@@ -34,6 +54,8 @@ class AudioManager {
     Howler.mute(!enabled);
     if (!enabled) {
       this.stopMusic();
+    } else {
+      this.playMusic();
     }
   }
 
@@ -342,6 +364,127 @@ class AudioManager {
       osc2.start(t);
       osc2.stop(t + 0.2);
     });
+  }
+
+  /** Continuous reel spinning sound - mechanical hum with rhythmic clicking */
+  startSpinLoop(): void {
+    if (!this._enabled || this._spinLoopPlaying) return;
+    try {
+      const ctx = this.getContext();
+      if (!ctx) return;
+
+      this._spinLoopPlaying = true;
+
+      // Low-frequency mechanical hum (motor sound)
+      const motorOsc = ctx.createOscillator();
+      motorOsc.type = 'sawtooth';
+      motorOsc.frequency.value = 85;
+
+      const motorFilter = ctx.createBiquadFilter();
+      motorFilter.type = 'lowpass';
+      motorFilter.frequency.value = 300;
+      motorFilter.Q.value = 3;
+
+      const motorGain = ctx.createGain();
+      motorGain.gain.value = 0.04;
+
+      motorOsc.connect(motorFilter).connect(motorGain).connect(ctx.destination);
+      motorOsc.start();
+
+      this._spinLoopNodes.push(motorOsc, motorFilter, motorGain);
+
+      // Higher harmonic whir for reels spinning
+      const whirOsc = ctx.createOscillator();
+      whirOsc.type = 'triangle';
+      whirOsc.frequency.value = 220;
+
+      // Wobble LFO for organic feel
+      const wobbleLfo = ctx.createOscillator();
+      wobbleLfo.type = 'sine';
+      wobbleLfo.frequency.value = 6;
+      const wobbleGain = ctx.createGain();
+      wobbleGain.gain.value = 15;
+      wobbleLfo.connect(wobbleGain);
+      wobbleGain.connect(whirOsc.frequency);
+
+      const whirFilter = ctx.createBiquadFilter();
+      whirFilter.type = 'bandpass';
+      whirFilter.frequency.value = 400;
+      whirFilter.Q.value = 2;
+
+      const whirGain = ctx.createGain();
+      whirGain.gain.value = 0.025;
+
+      whirOsc.connect(whirFilter).connect(whirGain).connect(ctx.destination);
+      whirOsc.start();
+      wobbleLfo.start();
+
+      this._spinLoopNodes.push(whirOsc, wobbleLfo, wobbleGain, whirFilter, whirGain);
+
+      // Looping click pattern (symbol ticks) using noise bursts
+      const clickLoop = (): void => {
+        if (!this._spinLoopPlaying) return;
+        try {
+          const cCtx = this.getContext();
+          if (!cCtx) return;
+          const now = cCtx.currentTime;
+
+          // Quick tick sound
+          const tickLen = Math.floor(cCtx.sampleRate * 0.008);
+          const tickBuf = cCtx.createBuffer(1, tickLen, cCtx.sampleRate);
+          const tickData = tickBuf.getChannelData(0);
+          for (let i = 0; i < tickLen; i++) {
+            tickData[i] = (Math.random() * 2 - 1) * (1 - i / tickLen);
+          }
+          const tickSrc = cCtx.createBufferSource();
+          tickSrc.buffer = tickBuf;
+
+          const tickFilter = cCtx.createBiquadFilter();
+          tickFilter.type = 'bandpass';
+          tickFilter.frequency.value = 1500 + Math.random() * 500;
+          tickFilter.Q.value = 1.5;
+
+          const tickGain = cCtx.createGain();
+          tickGain.gain.value = 0.03 + Math.random() * 0.02;
+
+          tickSrc.connect(tickFilter).connect(tickGain).connect(cCtx.destination);
+          tickSrc.start(now);
+          tickSrc.stop(now + 0.008);
+        } catch {
+          // ignore
+        }
+      };
+
+      // Ticks at ~25 per second (simulating symbols flying past)
+      clickLoop();
+      const clickInterval = setInterval(clickLoop, 40);
+      // Store interval ID as a node-like object for cleanup
+      this._spinLoopNodes.push({
+        stop: () => clearInterval(clickInterval),
+        disconnect: () => {}
+      } as any);
+    } catch {
+      // Silently fail
+    }
+  }
+
+  stopSpinLoop(): void {
+    this._spinLoopPlaying = false;
+    this._spinLoopNodes.forEach((node) => {
+      try {
+        if (node instanceof AudioBufferSourceNode || node instanceof OscillatorNode) {
+          node.stop();
+        }
+        if ('stop' in node && typeof (node as any).stop === 'function' &&
+            !(node instanceof AudioBufferSourceNode) && !(node instanceof OscillatorNode)) {
+          (node as any).stop();
+        }
+        node.disconnect();
+      } catch {
+        // already stopped
+      }
+    });
+    this._spinLoopNodes = [];
   }
 
   /** Background music - ambient jungle-themed loop with subtle rhythm */
