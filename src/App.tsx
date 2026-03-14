@@ -4,6 +4,7 @@ import { store } from './store/store';
 import { initPixiApp, destroyPixiApp } from './pixi/PixiApp';
 import { GameScene } from './pixi/scenes/GameScene';
 import { useResize } from './hooks/useResize';
+import { useGameLoop } from './hooks/useGameLoop';
 import { generateReelResult } from './engine/symbolGenerator';
 import { BottomBar } from './ui/BottomBar';
 import './styles/ui.css';
@@ -30,6 +31,7 @@ function Game() {
   }, []);
 
   useResize(scene);
+  useGameLoop(scene);
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
